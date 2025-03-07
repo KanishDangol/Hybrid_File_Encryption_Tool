@@ -14,11 +14,8 @@ int main() {
   int shiftedArray[5] = {0};
 
   for (int j = 0; j < 5; j++) {
-    if (j == 4) {
-      shiftedArray[0] = array[j];
-    } else {
-      shiftedArray[j + 1] = array[j];
-    }
+    int newIndex = j + 1;
+    shiftedArray[newIndex % 5] = array[j];
   }
 
   printf("Original array: ");

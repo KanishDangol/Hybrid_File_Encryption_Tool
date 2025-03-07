@@ -20,6 +20,13 @@ int main() {
   };  
   int shiftedMatrix[4][5] = {0};
 
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 5; j++) {
+      int newIndex = j + i;
+      shiftedMatrix[i][newIndex % 5] = matrix[i][j];
+    }
+  }
+
   printf("Matrix: \n");
   printMatrix(matrix);
 
