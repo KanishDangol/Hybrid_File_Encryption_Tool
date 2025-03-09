@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdint.h>
 
-void printMatrix(uint8_t matrix[][2]) {   
+void printMatrix(uint8_t matrix[4][4]) {   
 
-  for (int i = 0; i < 2; i++) {
-    for (int j = 0; j < 2; j++) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
       printf("%.2x ", matrix[i][j]);  
     }
   printf("\n");
@@ -32,21 +32,22 @@ uint8_t sbox[16][16] = {
     { 0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16 }
 };
 
-  uint8_t block[2][2] = {
-    { 0x00, 0x7d },
-    { 0x9a, 0xc9 }
+  uint8_t block[4][4] = {
+      { 0x3a, 0x7d, 0x92, 0xe1 },
+      { 0x5f, 0xa8, 0x16, 0xcb },
+      { 0xde, 0x47, 0x80, 0x39 },
+      { 0xfa, 0x2c, 0x6b, 0x11 }
   };
 
   printf("Original Block: \n");
   printMatrix(block);  
 
-  for (int i = 0; i < 2; i++) {
-    for (int j = 0; j < 2; j++) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
       uint8_t byte = block[i][j];
       uint8_t column = byte % 16;
       uint8_t row = byte / 16;
 
-     // printf("byte: %.2x\nrow: %.2x\ncolumn: %.2x\n", byte, row, column);
       block[i][j] = sbox[row][column];
     }
   }
@@ -55,5 +56,7 @@ uint8_t sbox[16][16] = {
   printMatrix(block);  
 
   return 0;
+
+  //TODO: combine sbox.c and shift_matrix.c into one program
 
 }
