@@ -20,6 +20,8 @@ static uint8_t sbox[16][16] = {
     { 0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16 }
 };
 
+uint8_t gmul(uint8_t a, uint8_t b);
+void mixColumns(uint8_t block[4][4]);
 void subBytes(uint8_t matrix[4][4]);
 void printMatrix(uint8_t matrix[4][4]);
 void leftShift(uint8_t matrix[4][4], uint8_t leftShiftedMatrix[4][4]);
@@ -28,10 +30,10 @@ void rightShift(uint8_t rightShiftedMatrix[4][4], uint8_t leftShiftedMatrix[4][4
 int main() {
 
   uint8_t block[4][4] = {
-      { 0x3a, 0x7d, 0x92, 0xe1 },
-      { 0x5f, 0xa8, 0x16, 0xcb },
-      { 0xde, 0x47, 0x80, 0x39 },
-      { 0xfa, 0x2c, 0x6b, 0x11 }
+      { 0x87, 0xf2, 0x4d, 0x97 },
+      { 0x6e, 0x4c, 0x90, 0xec },
+      { 0x46, 0xe7, 0x4a, 0xc3 },
+      { 0xa6, 0x8c, 0xd8, 0x95 }  
   };
   uint8_t rightShiftedMatrix[4][4] = {0};
   uint8_t leftShiftedMatrix[4][4] = {0};
@@ -39,7 +41,7 @@ int main() {
   printf("Original Block: \n");
   printMatrix(block);  
 
-  subBytes(block);
+  /*subBytes(block);
 
   printf("Substituted Block: \n");
   printMatrix(block);  
@@ -52,11 +54,36 @@ int main() {
 
   printf("Right Shifted: \n");
   printMatrix(rightShiftedMatrix);
+*/
+  mixColumns(block);
+  printf("After MixColumns: \n");
+  printMatrix(block);
 
   return 0;
 
-  //TODO: combine sbox.c and shift_matrix.c into one program
+}
 
+uint8_t gmul(uint8_t a, uint8_t b) {
+    uint8_t p = 0;
+    while (b) {
+        if (b & 1) p ^= a;  // If LSB of b is 1, add a to result
+        uint8_t hi_bit_set = a & 0x80; // Check if MSB is set
+        a <<= 1; // Multiply by x (left shift)
+        if (hi_bit_set) a ^= 0x1B; // Reduce if overflowed
+        b >>= 1; // Move to the next bit
+    }
+    return p;
+}
+
+void mixColumns(uint8_t block[4][4]) {
+    for (int c = 0; c < 4; c++) {  // Process each column
+        uint8_t a0 = block[0][c], a1 = block[1][c], a2 = block[2][c], a3 = block[3][c];
+
+        block[0][c] = gmul(2, a0) ^ gmul(3, a1) ^ a2 ^ a3;  // 2*a0 + 3*a1 + 1*a2 + 1*a3
+        block[1][c] = a0 ^ gmul(2, a1) ^ gmul(3, a2) ^ a3;  // 1*a0 + 2*a1 + 3*a2 + 1*a3
+        block[2][c] = a0 ^ a1 ^ gmul(2, a2) ^ gmul(3, a3);  // 1*a0 + 1*a1 + 2*a2 + 3*a3
+        block[3][c] = gmul(3, a0) ^ a1 ^ a2 ^ gmul(2, a3);  // 3*a0 + 1*a1 + 1*a2 + 2*a3
+    }
 }
 
 void printMatrix(uint8_t matrix[4][4]) {   
