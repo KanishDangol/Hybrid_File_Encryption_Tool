@@ -1,19 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 
-void printMatrix(uint8_t matrix[4][4]) {   
-
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      printf("%.2x ", matrix[i][j]);  
-    }
-  printf("\n");
-  }
-}
-
-int main() {
-
-uint8_t sbox[16][16] = {
+static uint8_t sbox[16][16] = {
     { 0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67, 0x2b, 0xfe, 0xd7, 0xab, 0x76 },
     { 0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59, 0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0 },
     { 0xb7, 0xfd, 0x93, 0x26, 0x36, 0x3f, 0xf7, 0xcc, 0x34, 0xa5, 0xe5, 0xf1, 0x71, 0xd8, 0x31, 0x15 },
@@ -32,31 +20,83 @@ uint8_t sbox[16][16] = {
     { 0x8c, 0xa1, 0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0, 0x54, 0xbb, 0x16 }
 };
 
+void subBytes(uint8_t matrix[4][4]);
+void printMatrix(uint8_t matrix[4][4]);
+void leftShift(uint8_t matrix[4][4], uint8_t leftShiftedMatrix[4][4]);
+void rightShift(uint8_t rightShiftedMatrix[4][4], uint8_t leftShiftedMatrix[4][4]);
+
+int main() {
+
   uint8_t block[4][4] = {
       { 0x3a, 0x7d, 0x92, 0xe1 },
       { 0x5f, 0xa8, 0x16, 0xcb },
       { 0xde, 0x47, 0x80, 0x39 },
       { 0xfa, 0x2c, 0x6b, 0x11 }
   };
+  uint8_t rightShiftedMatrix[4][4] = {0};
+  uint8_t leftShiftedMatrix[4][4] = {0};
 
   printf("Original Block: \n");
   printMatrix(block);  
 
-  for (int i = 0; i < 4; i++) {
-    for (int j = 0; j < 4; j++) {
-      uint8_t byte = block[i][j];
-      uint8_t column = byte % 16;
-      uint8_t row = byte / 16;
-
-      block[i][j] = sbox[row][column];
-    }
-  }
+  subBytes(block);
 
   printf("Substituted Block: \n");
   printMatrix(block);  
+
+  leftShift(block, leftShiftedMatrix);
+  rightShift(rightShiftedMatrix, leftShiftedMatrix);
+
+  printf("Left Shifted: \n");
+  printMatrix(leftShiftedMatrix);
+
+  printf("Right Shifted: \n");
+  printMatrix(rightShiftedMatrix);
 
   return 0;
 
   //TODO: combine sbox.c and shift_matrix.c into one program
 
+}
+
+void printMatrix(uint8_t matrix[4][4]) {   
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      printf("%.2x ", matrix[i][j]);  
+    }
+  printf("\n");
+  }
+  return;
+}
+
+void subBytes(uint8_t matrix[4][4]) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      uint8_t byte = matrix[i][j];
+      uint8_t column = byte % 16;
+      uint8_t row = byte / 16;
+      matrix[i][j] = sbox[row][column];
+    }
+  }
+  return;
+}
+
+void leftShift(uint8_t matrix[4][4], uint8_t leftShiftedMatrix[4][4]) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+     int newIndex = j + (4 - i);
+     leftShiftedMatrix[i][newIndex % 4] = matrix[i][j];
+    }
+  }
+  return;
+}
+
+void rightShift(uint8_t rightShiftedMatrix[4][4], uint8_t leftShiftedMatrix[4][4]) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      int newIndex = j + i;
+      rightShiftedMatrix[i][newIndex % 4] = leftShiftedMatrix[i][j];
+    }
+  }
+  return;
 }
