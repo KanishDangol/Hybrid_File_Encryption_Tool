@@ -1,4 +1,4 @@
-PROG = aes_gui
+PROG = main
 
 CC = gcc
 CFLAGS = `pkg-config --cflags gtk+-3.0`
