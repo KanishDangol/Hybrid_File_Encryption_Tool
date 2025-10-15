@@ -74,6 +74,10 @@ Then:
 - Click **Encrypt** to create a `.enc` file
 - Click **Decrypt** to generate the original as `.dec`
 
+<img width="501" height="337" alt="Screenshot 2025-10-15 135719" src="https://github.com/user-attachments/assets/4a7fe86e-2f79-4382-88c4-59993af95f73" />
+
+  
+
 ## Technologies Used
 
 - **C (GCC)** for low-level cryptographic implementation  
