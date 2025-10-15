@@ -68,15 +68,22 @@ Launch the graphical interface with:
 ```bash
 make run-gui
 ```
-
+<img width="501" height="337" alt="Screenshot 2025-10-15 135719" src="https://github.com/user-attachments/assets/4a7fe86e-2f79-4382-88c4-59993af95f73" />
 Then:
 - Click **Browse** to select your file
 - Click **Encrypt** to create a `.enc` file
 - Click **Decrypt** to generate the original as `.dec`
 
-<img width="501" height="337" alt="Screenshot 2025-10-15 135719" src="https://github.com/user-attachments/assets/4a7fe86e-2f79-4382-88c4-59993af95f73" />
+<img width="1200" height="948" alt="Screenshot 2025-10-15 135919" src="https://github.com/user-attachments/assets/ade54df1-61f7-4d5f-ac9e-c37cf6fb478c" />
 
+- The output in the terminal should look like this:
+
+  <img width="1427" height="200" alt="Screenshot 2025-10-15 140148" src="https://github.com/user-attachments/assets/6cc5e4ad-daff-48b5-b9a4-337467634869" />
+
+- Here are the contents of each file (input file: input.txt, encrypted file: input.txt.enc, decrypted file: input.txt.enc.dec)
   
+  <img width="2541" height="495" alt="Screenshot 2025-10-15 143742" src="https://github.com/user-attachments/assets/df818525-15db-4f68-9124-1362603e6ad8" />
+
 
 ## Technologies Used
 
